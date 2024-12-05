@@ -31,11 +31,13 @@ async def start(message: types.Message):
 async def my_info(message: types.Message):
     id = message.from_user.id
     username = message.from_user.username
+    if username is None:
+        username = "У вас нет username "
     name = message.from_user.first_name
     await message.answer(f'Вот вся информация о вас:\n'
                          f'ID - {id}\n'
-                         f'Username - {username}\n'
-                         f'Name - {name}')
+                         f'Name - {name}\n'
+                         f'Username - {username}')
 
 
 names = ['Alex','Dante','Vergil','Raiden','Sam']
