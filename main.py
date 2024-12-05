@@ -41,7 +41,7 @@ async def my_info(message: types.Message):
         await message.answer(f'Вот вся информация о вас:\n'
                              f'ID - {id}\n'
                              f'Ваше имя - {name}\n'
-                             f'Ваш никнейм - {username}')
+                             f'Ваш никнейм - @{username}')
 
 
 
