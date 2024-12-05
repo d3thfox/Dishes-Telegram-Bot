@@ -32,8 +32,10 @@ async def my_info(message: types.Message):
     id = message.from_user.id
     username = message.from_user.username
     name = message.from_user.first_name
-    await message.answer(f'Вот вся информация о вас :'
-                         f'ID - {id}, Username - {username} , Name - {name}')
+    await message.answer(f'Вот вся информация о вас:\n'
+                         f'ID - {id}\n'
+                         f'Username - {username}\n'
+                         f'Name - {name}')
 
 
 names = ['Alex','Dante','Vergil','Raiden','Sam']
