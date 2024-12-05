@@ -19,7 +19,12 @@ async def start(message: types.Message):
     if message.from_user.id not in user_id:
         user_id.add(message.from_user.id)
     users = len(user_id)
-    await message.answer(f'Привет!{name}, мы обслужили уже {users} пользователей ')
+    await message.answer(f'Привет!{name},\n'
+                         f'Мы обслужили уже {users} пользователей\n'
+                         f'Мои комманды:\n'
+                         f'/start - начало работы с ботом\n'
+                         f'/my_info - показывает всю информацию о вас\n'
+                         f'/random - выбирает рандомное имя и отправляет вам')
 
 
 @dp.message(Command("my_info"))
@@ -29,6 +34,7 @@ async def my_info(message: types.Message):
     name = message.from_user.first_name
     await message.answer(f'Вот вся информация о вас :'
                          f'ID - {id}, Username - {username} , Name - {name}')
+
 
 names = ['Alex','Dante','Vergil','Raiden','Sam']
 
