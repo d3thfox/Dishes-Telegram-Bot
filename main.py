@@ -4,11 +4,11 @@ from handlers.start import start_router
 from handlers.random_recipe import random_recipe_router
 from handlers.my_info import my_info_router
 from bot_config import bot,dp
-
+from handlers.review_dialog import review_router
 
 
 async def main():
-   dp.include_routers(start_router,random_recipe_router,my_info_router)
+   dp.include_routers(start_router,random_recipe_router,my_info_router,review_router)
    await dp.start_polling(bot)
 
 
