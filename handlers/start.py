@@ -37,5 +37,5 @@ async def start(message: types.message):
 async def start_review_callback(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.answer("Вы начали оставлять отзыв!")
     await callback.answer()
-    await start_review(callback.message, state)
+    await start_review(callback, state)
 
