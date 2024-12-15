@@ -37,10 +37,10 @@ async def get_phone_number(message: types.Message, state: FSMContext):
     phone_number = message.text
     if not phone_number.isdigit():
         await message.answer('К вводу допускаются только числа. Попробуйте еще раз.')
-        return  # Завершаем обработку, если ввод не числовой
+        return
     if len(phone_number) != 12:
         await message.answer("Номер телефона должен состоять из 12 цифр. Попробуйте еще раз.")
-        return  # Завершаем обработку, если длина номера неверная
+        return
     await state.update_data(phone_number=phone_number)
 
     kb = InlineKeyboardMarkup(
@@ -74,6 +74,7 @@ async def get_cleanliness_rating(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Можете ввести дополнительные комментарии/жалобы:")
     await state.set_state(RestourantReview.extra_comments)
     await callback.answer()
+
 
 @review_router.message(RestourantReview.extra_comments)
 async def get_extra_comments(message: types.Message, state: FSMContext):
