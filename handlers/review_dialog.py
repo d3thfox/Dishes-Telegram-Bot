@@ -1,4 +1,4 @@
-
+from datetime import datetime
 from aiogram import Router, types,F
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
@@ -26,8 +26,16 @@ async def start_review(callback_query: CallbackQuery, state: FSMContext):
 
     user_id.add(callback_query.from_user.id)
 
+
 @review_router.message(RestourantReview.name)
 async def get_name(message: types.Message, state: FSMContext):
+    name = message.text
+    if not name.isalpha():
+        await message.answer('Введите имя прописными буквами')
+        return
+    if len(name) < 3 or len(name) > 8:
+        await message.answer('Имя не должно быть меньше 3 символов и не должно привышать 8')
+        return
     await state.update_data(name=message.text)
     await message.answer('Введите ваш номер телефона (используйте код страны).\nПример: 996555111222')
     await state.set_state(RestourantReview.phone_number)
@@ -79,6 +87,8 @@ async def get_cleanliness_rating(callback: CallbackQuery, state: FSMContext):
 @review_router.message(RestourantReview.extra_comments)
 async def get_extra_comments(message: types.Message, state: FSMContext):
     await state.update_data(extra_comments=message.text)
+    time_date = datetime.now()
+    formatted_date = time_date.strftime('%Y-%m-%d %H:%M:%S')
 
     data = await state.get_data()
     await message.answer(
@@ -87,6 +97,9 @@ async def get_extra_comments(message: types.Message, state: FSMContext):
         f"Ваш номер телефона: {data['phone_number']}\n"
         f"Оценка еды: {data['food_rating']}\n"
         f"Оценка чистоты: {data['cleanliness_rating']}\n"
-        f"Комментарии: {data['extra_comments']}"
+        f"Комментарии: {data['extra_comments']}\n"
+        f"Дата отзыва : {formatted_date}"
     )
     await state.clear()
+
+
