@@ -15,7 +15,8 @@ class RestourantReview(StatesGroup):
 
 user_id = set()
 
-@review_router.callback_query(F == 'start_review')
+@review_router.callback_query(lambda callback : callback.data == 'start_review')
+#а так пойдет? xd P.S(я тугодум)
 async def start_review(callback_query: CallbackQuery, state: FSMContext):
     if callback_query.from_user.id in user_id:
         await callback_query.message.answer('Вы уже оставляли отзыв')

@@ -33,9 +33,4 @@ async def start(message: types.message):
 
 
 
-@start_router.callback_query(lambda callback: callback.data == "start_review")
-async def start_review_callback(callback: types.CallbackQuery, state: FSMContext):
-    await callback.message.answer("Вы начали оставлять отзыв!")
-    await callback.answer()
-    await start_review(callback, state)
 
