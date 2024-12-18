@@ -12,7 +12,6 @@ user_id = set()
 
 @start_router.message(Command("start"))
 async def start(message: types.message):
-    global user_id
     name = message.from_user.first_name
     if message.from_user.id not in user_id:
         user_id.add(message.from_user.id)
@@ -21,8 +20,10 @@ async def start(message: types.message):
         inline_keyboard=[
             [
                 types.InlineKeyboardButton(text = 'Оставить отзыв', callback_data = 'start_review'),
+                types.InlineKeyboardButton(text='Добавить новый рецепт', callback_data='new_recipe'),
             ]
         ]
+
     )
     await message.answer(f'Привет!{name},\n'
                          f'Мы обслужили уже {users} пользователей\n'

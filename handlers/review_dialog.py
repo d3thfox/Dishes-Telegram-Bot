@@ -1,8 +1,9 @@
-from datetime import datetime
+
 from aiogram import Router, types,F
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from bot_config import database
 
 review_router = Router()
 
@@ -12,11 +13,13 @@ class RestourantReview(StatesGroup):
     food_rating = State()
     cleanliness_rating = State()
     extra_comments = State()
+    time_data = State()
 
 user_id = set()
 
-@review_router.callback_query(lambda callback : callback.data == 'start_review')
-#а так пойдет? xd P.S(я тугодум)
+@review_router.callback_query(F.data == 'start_review')
+#а так пойдет? xd
+# P.S я тугодум
 async def start_review(callback_query: CallbackQuery, state: FSMContext):
     if callback_query.from_user.id in user_id:
         await callback_query.message.answer('Вы уже оставляли отзыв')
@@ -88,10 +91,20 @@ async def get_cleanliness_rating(callback: CallbackQuery, state: FSMContext):
 @review_router.message(RestourantReview.extra_comments)
 async def get_extra_comments(message: types.Message, state: FSMContext):
     await state.update_data(extra_comments=message.text)
-    time_date = datetime.now()
-    formatted_date = time_date.strftime('%Y-%m-%d %H:%M:%S')
+    await message.answer('Введите дату посещения\n'
+                         'Пример(19.12.2024)')
+    await state.set_state(RestourantReview.time_data)
+
+
+@review_router.message(RestourantReview.time_data)
+async def get_extra_comments(message: types.Message, state: FSMContext):
+    if len(message.text) != 10:
+        await message.answer('Превышенно допустмое колличество символов')
+        return
+    await state.update_data(time_data=message.text)
 
     data = await state.get_data()
+    database.save_survey(data)
     await message.answer(
         "Спасибо за пройденный опрос!\n\n"
         f"Ваше имя : {data['name']}\n"
@@ -99,8 +112,7 @@ async def get_extra_comments(message: types.Message, state: FSMContext):
         f"Оценка еды: {data['food_rating']}\n"
         f"Оценка чистоты: {data['cleanliness_rating']}\n"
         f"Комментарии: {data['extra_comments']}\n"
-        f"Дата отзыва : {formatted_date}"
+        f"Дата посещения : {data['time_data']}\n"
     )
     await state.clear()
-
 
