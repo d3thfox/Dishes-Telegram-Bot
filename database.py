@@ -30,7 +30,9 @@ class Database:
                 CREATE TABLE IF NOT EXISTS recipe (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 recipe TEXT,
-                image VARCHAR(20)
+                image VARCHAR(20),
+                price INTEGER,
+                category VARCHAR(15)
                 )
                 """)
             conn.commit()
@@ -50,9 +52,9 @@ class Database:
         with sqlite3.connect(self.path) as conn:
             conn.execute(
                 """
-                    INSERT INTO recipe (recipe, image) 
-                    VALUES (?, ?)
+                    INSERT INTO recipe (recipe, image,price, category) 
+                    VALUES (?, ?, ?, ?)
                    
                 """,
-                (data["recipe"], data["image"])
+                (data["recipe"], data["image"], data["price"],data["category"])
             )
