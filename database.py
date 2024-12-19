@@ -1,5 +1,5 @@
 import sqlite3
-from random import choice
+
 
 
 class Database:
@@ -11,7 +11,7 @@ class Database:
             conn.execute(
                 """
                 
-                CREATE TABLE IF NOT EXISTS survey_result (
+                CREATE TABLE IF NOT EXISTS review (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
                 phone_number VARCHAR(12),
@@ -29,11 +29,12 @@ class Database:
             conn.execute(
                 """
 
-                CREATE TABLE IF NOT EXISTS recipe (
+                CREATE TABLE IF NOT EXISTS dishes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
                 recipe TEXT,
                 image VARCHAR(20),
-                price INTEGER,
+                price FLOAT,
                 category VARCHAR(15)
                 )
                 """)
@@ -43,7 +44,7 @@ class Database:
         with sqlite3.connect(self.path) as conn:
             conn.execute(
                 """
-                    INSERT INTO survey_result (name, phone_number,food_rating,cleanliness_rating,extra_comments,time_data,user_id)
+                    INSERT INTO review (name, phone_number,food_rating,cleanliness_rating,extra_comments,time_data,user_id)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 (data["name"], data["phone_number"], data["food_rating"], data["cleanliness_rating"], data["extra_comments"], data["time_data"],data["user_id"])
@@ -54,11 +55,11 @@ class Database:
         with sqlite3.connect(self.path) as conn:
             conn.execute(
                 """
-                    INSERT INTO recipe (recipe, image,price, category) 
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO dishes (name, recipe, image, price, category) 
+                    VALUES (?, ?, ?, ?, ?)
                    
                 """,
-                (data["recipe"], data["image"], data["price"],data["category"])
+                (data["name"], data["recipe"], data["image"], data["price"], data["category"])
             )
     def check_user_id(self, user_id):
         with sqlite3.connect(self.path) as conn:
@@ -70,6 +71,6 @@ class Database:
     def random_rec(self):
         with sqlite3.connect(self.path) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT recipe,image FROM recipe ORDER BY RANDOM() LIMIT 1")
+            cursor.execute("SELECT recipe,image FROM dishes ORDER BY RANDOM() LIMIT 1")
             random_recipe = cursor.fetchone()
             return random_recipe

@@ -14,6 +14,7 @@ new_recipe_router.callback_query.filter(F.from_user.id == 1787320714)
 
 class NewRecipe(StatesGroup):
     confirm = State()
+    name = State()
     recipe = State()
     image = State()
     price = State()
@@ -32,15 +33,26 @@ async def new_recipe(callback_query : CallbackQuery, state: FSMContext):
     await callback_query.message.answer('Вы уверены?', reply_markup=kb)
     await state.set_state(NewRecipe.confirm)
 
-@new_recipe_router.callback_query(F.data == 'no')
+@new_recipe_router.callback_query(NewRecipe.confirm,F.data == 'no')
 async def cancel(callback_query : CallbackQuery, state: FSMContext):
     await callback_query.message.answer('Отмена')
     await state.clear()
 
-@new_recipe_router.callback_query(F.data == 'yes')
+@new_recipe_router.callback_query(NewRecipe.confirm,F.data == 'yes')
 async def handler_confirm(callback : CallbackQuery, state: FSMContext):
-    await callback.message.answer('Введите рецепт')
+    await callback.message.answer('Введите название блюда')
+    await state.set_state(NewRecipe.name)
+
+@new_recipe_router.message(NewRecipe.name)
+async def handler_confirm(message : types.Message, state: FSMContext):
+    name = message.text
+    if name.isdigit():
+        await message.answer('Пишите буквами')
+        return
+    await state.update_data(name=name)
+    await message.answer('Введите рецепт')
     await state.set_state(NewRecipe.recipe)
+
 
 @new_recipe_router.message(NewRecipe.recipe)
 async def handler_recipe(message : Message, state: FSMContext):
