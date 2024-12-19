@@ -1,7 +1,5 @@
 from aiogram import Router, types
 from aiogram.filters import  Command
-from random import choice
-from recipes import rec
 from bot_config import database
 
 random_recipe_router = Router()

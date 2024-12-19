@@ -23,14 +23,24 @@ async def start(message: types.message):
                 types.InlineKeyboardButton(text='Добавить новый рецепт', callback_data='new_recipe'),
             ]
         ]
-
     )
+    kb_1 = types.ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                types.KeyboardButton(text='/my_info'),
+                types.KeyboardButton(text='/random_recipe'),
+            ]
+        ],
+        resize_keyboard = True
+    )
+
     await message.answer(f'Привет!{name},\n'
                          f'Мы обслужили уже {users} пользователей\n'
                          f'Мои комманды:\n'
                          f'/start - начало работы с ботом\n'
                          f'/my_info - показывает всю информацию о вас\n'
-                         f'/random_recipe - выбирает рандомный рецепт и отправляет вам', reply_markup=kb)
+                         f'/random_recipe - выбирает рандомный рецепт и отправляет вам', reply_markup=kb,)
+    await message.answer('Мржете выбрать команду',reply_markup=kb_1)
 
 
 
