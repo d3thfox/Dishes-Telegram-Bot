@@ -40,7 +40,7 @@ async def start(message: types.message):
                          f'/start - начало работы с ботом\n'
                          f'/my_info - показывает всю информацию о вас\n'
                          f'/random_recipe - выбирает рандомный рецепт и отправляет вам', reply_markup=kb,)
-    await message.answer('Мржете выбрать команду',reply_markup=kb_1)
+    await message.answer('Можете выбрать команду',reply_markup=kb_1)
 
 
 
