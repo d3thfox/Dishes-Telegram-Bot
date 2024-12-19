@@ -15,20 +15,23 @@ class RestourantReview(StatesGroup):
     extra_comments = State()
     time_data = State()
 
-user_id = set()
+
+
 
 @review_router.callback_query(F.data == 'start_review')
 #а так пойдет? xd
 # P.S я тугодум
 async def start_review(callback_query: CallbackQuery, state: FSMContext):
-    if callback_query.from_user.id in user_id:
+    user_id = callback_query.from_user.id
+    user =  database.check_user_id(user_id)
+    if user:
         await callback_query.message.answer('Вы уже оставляли отзыв')
         await state.clear()
         return
     await callback_query.message.answer('Введите ваше имя')
     await state.set_state(RestourantReview.name)
 
-    user_id.add(callback_query.from_user.id)
+
 
 
 @review_router.message(RestourantReview.name)
@@ -102,6 +105,7 @@ async def get_extra_comments(message: types.Message, state: FSMContext):
         await message.answer('Превышенно допустмое колличество символов')
         return
     await state.update_data(time_data=message.text)
+    await state.update_data(user_id=message.from_user.id)
 
     data = await state.get_data()
     database.save_survey(data)
@@ -115,4 +119,6 @@ async def get_extra_comments(message: types.Message, state: FSMContext):
         f"Дата посещения : {data['time_data']}\n"
     )
     await state.clear()
+
+
 

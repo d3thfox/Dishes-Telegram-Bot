@@ -1,4 +1,5 @@
 import sqlite3
+from random import choice
 
 
 class Database:
@@ -17,7 +18,8 @@ class Database:
                 food_rating INTEGER,
                 cleanliness_rating INTEGER,
                 extra_comments TEXT,
-                time_data DATA
+                time_data DATA,
+                user_id INTEGER
                 )
                 """)
             conn.commit()
@@ -41,10 +43,10 @@ class Database:
         with sqlite3.connect(self.path) as conn:
             conn.execute(
                 """
-                    INSERT INTO survey_result (name, phone_number,food_rating,cleanliness_rating,extra_comments,time_data)
-                    VALUES (?, ?, ?, ?, ?,?)
+                    INSERT INTO survey_result (name, phone_number,food_rating,cleanliness_rating,extra_comments,time_data,user_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
-                (data["name"], data["phone_number"], data["food_rating"], data["cleanliness_rating"], data["extra_comments"], data["time_data"])
+                (data["name"], data["phone_number"], data["food_rating"], data["cleanliness_rating"], data["extra_comments"], data["time_data"],data["user_id"])
             )
 
 
@@ -58,3 +60,16 @@ class Database:
                 """,
                 (data["recipe"], data["image"], data["price"],data["category"])
             )
+    def check_user_id(self, user_id):
+        with sqlite3.connect(self.path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM survey_result WHERE user_id = ?", (user_id,))
+            user = cursor.fetchone()
+            return user
+
+    def random_rec(self):
+        with sqlite3.connect(self.path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT recipe,image FROM recipe ORDER BY RANDOM() LIMIT 1")
+            random_recipe = cursor.fetchone()
+            return random_recipe
