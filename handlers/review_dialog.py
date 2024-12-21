@@ -8,6 +8,7 @@ from bot_config import database
 review_router = Router()
 
 class RestourantReview(StatesGroup):
+    confirm = State()
     name = State()
     phone_number = State()
     food_rating = State()
@@ -15,19 +16,43 @@ class RestourantReview(StatesGroup):
     extra_comments = State()
     time_data = State()
 
-
-
-
-@review_router.callback_query(F.data == 'start_review')
-#а так пойдет? xd
-# P.S я тугодум
-async def start_review(callback_query: CallbackQuery, state: FSMContext):
+@review_router.callback_query(F.data == "start_review")
+async def new_recipe(callback_query : CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
     user =  database.check_user_id(user_id)
     if user:
         await callback_query.message.answer('Вы уже оставляли отзыв')
+        await callback_query.answer()
         await state.clear()
         return
+
+    kb = types.InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text='Да',callback_data= 'yes'),
+                InlineKeyboardButton(text='Не',callback_data= 'no'),
+            ]
+        ]
+    )
+    await callback_query.message.answer('Вы действительно хотите оставить отзыв?', reply_markup=kb)
+    await callback_query.answer()
+    await state.set_state(RestourantReview.confirm)
+
+@review_router.callback_query(RestourantReview.confirm, F.data == 'no')
+async def cancel(callback_query : CallbackQuery, state: FSMContext):
+    await callback_query.message.answer('Отмена')
+    await callback_query.answer()
+    await state.clear()
+
+@review_router.callback_query(RestourantReview.confirm,F.data == 'yes')
+async def handler_confirm(callback : CallbackQuery, state: FSMContext):
+    await callback.message.answer('Введите ваше имя')
+    await callback.answer()
+    await state.set_state(RestourantReview.name)
+
+
+@review_router.callback_query(RestourantReview.name)
+async def start_review(callback_query: CallbackQuery, state: FSMContext):
     await callback_query.message.answer('Введите ваше имя')
     await callback_query.answer()
     await state.set_state(RestourantReview.name)
