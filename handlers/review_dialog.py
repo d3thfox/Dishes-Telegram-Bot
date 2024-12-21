@@ -29,6 +29,7 @@ async def start_review(callback_query: CallbackQuery, state: FSMContext):
         await state.clear()
         return
     await callback_query.message.answer('Введите ваше имя')
+    await callback_query.answer()
     await state.set_state(RestourantReview.name)
 
 

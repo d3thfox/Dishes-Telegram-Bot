@@ -13,14 +13,13 @@ user_id = set()
 @start_router.message(Command("start"))
 async def start(message: types.message):
     name = message.from_user.first_name
-    if message.from_user.id not in user_id:
-        user_id.add(message.from_user.id)
     users = len(user_id)
     kb = types.InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 types.InlineKeyboardButton(text = 'Оставить отзыв', callback_data = 'start_review'),
                 types.InlineKeyboardButton(text='Добавить новый рецепт', callback_data='new_recipe'),
+                types.InlineKeyboardButton(text='Отоброзить каталог', callback_data='call_catalog'),
             ]
         ]
     )
@@ -29,6 +28,7 @@ async def start(message: types.message):
             [
                 types.KeyboardButton(text='/my_info'),
                 types.KeyboardButton(text='/random_recipe'),
+                types.KeyboardButton(text='/start'),
             ]
         ],
         resize_keyboard = True

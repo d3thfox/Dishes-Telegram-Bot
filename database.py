@@ -64,7 +64,7 @@ class Database:
     def check_user_id(self, user_id):
         with sqlite3.connect(self.path) as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM survey_result WHERE user_id = ?", (user_id,))
+            cursor.execute("SELECT * FROM review WHERE user_id = ?", (user_id,))
             user = cursor.fetchone()
             return user
 
@@ -74,3 +74,11 @@ class Database:
             cursor.execute("SELECT recipe,image FROM dishes ORDER BY RANDOM() LIMIT 1")
             random_recipe = cursor.fetchone()
             return random_recipe
+
+    def select_catalog(self):
+        with sqlite3.connect(self.path) as conn:
+            result = conn.execute("SELECT name,price,image FROM dishes")
+            result.row_factory = sqlite3.Row
+            data = result.fetchall()
+
+            return [dict(row) for row in data]

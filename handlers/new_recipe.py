@@ -31,16 +31,19 @@ async def new_recipe(callback_query : CallbackQuery, state: FSMContext):
         ]
     )
     await callback_query.message.answer('Вы уверены?', reply_markup=kb)
+    await callback_query.answer()
     await state.set_state(NewRecipe.confirm)
 
 @new_recipe_router.callback_query(NewRecipe.confirm,F.data == 'no')
 async def cancel(callback_query : CallbackQuery, state: FSMContext):
     await callback_query.message.answer('Отмена')
+    await callback_query.answer()
     await state.clear()
 
 @new_recipe_router.callback_query(NewRecipe.confirm,F.data == 'yes')
 async def handler_confirm(callback : CallbackQuery, state: FSMContext):
     await callback.message.answer('Введите название блюда')
+    await callback.answer()
     await state.set_state(NewRecipe.name)
 
 @new_recipe_router.message(NewRecipe.name)
