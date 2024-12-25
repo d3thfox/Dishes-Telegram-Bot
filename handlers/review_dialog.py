@@ -1,9 +1,10 @@
 
 from aiogram import Router, types,F
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.state import StatesGroup, State,default_state
 from aiogram.fsm.context import FSMContext
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from bot_config import database
+from aiogram.filters import Command
 
 review_router = Router()
 
@@ -16,7 +17,14 @@ class RestourantReview(StatesGroup):
     extra_comments = State()
     time_data = State()
 
-@review_router.callback_query(F.data == "start_review")
+@review_router.message(F.text == "stop")
+@review_router.message(Command('стоп'))
+async def stop_dialoge(message: types.Message, state: FSMContext):
+    await message.answer("Отмена")
+    await state.clear()
+    return
+
+@review_router.callback_query(F.data == "start_review",default_state)
 async def new_recipe(callback_query : CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
     user =  database.check_user_id(user_id)

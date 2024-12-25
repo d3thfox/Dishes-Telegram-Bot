@@ -1,10 +1,9 @@
 from aiogram import Router, F, types
-from aiogram.filters import Command
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.state import StatesGroup, State, default_state
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, Message
 from bot_config import database
-from bot_config import admin_id
+
 
 
 
@@ -20,7 +19,7 @@ class NewRecipe(StatesGroup):
     price = State()
     category = State()
 
-@new_recipe_router.callback_query(F.data == "new_recipe")
+@new_recipe_router.callback_query(F.data == "new_recipe",default_state)
 async def new_recipe(callback_query : CallbackQuery, state: FSMContext):
     kb = types.InlineKeyboardMarkup(
         inline_keyboard=[
@@ -60,13 +59,13 @@ async def handler_confirm(message : types.Message, state: FSMContext):
 @new_recipe_router.message(NewRecipe.recipe)
 async def handler_recipe(message : Message, state: FSMContext):
     await state.update_data(recipe=message.text)
-    await message.answer('Введите ссылку на файл\n'
-                         'Пример:image/cool_meat')
+    await message.answer('Загрузите изображение')
     await state.set_state(NewRecipe.image)
 
 @new_recipe_router.message(NewRecipe.image)
 async def handler_image(message : Message, state: FSMContext):
-    await state.update_data(image=message.text)
+    image = message.photo[-1].file_id
+    await state.update_data(image=image)
     await message.answer('Введите цену')
     await state.set_state(NewRecipe.price)
 

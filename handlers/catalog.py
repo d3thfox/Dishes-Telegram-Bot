@@ -10,7 +10,7 @@ catalog_router = Router()
 async def call_catalog_callback_query(callback_query: types.CallbackQuery):
     catalog = database.select_catalog()
     for i in catalog:
-        photo = FSInputFile(i['image'])
+        photo = i['image']
         name = i['name']
         price = i['price']
         await callback_query.message.answer_photo(photo=photo,caption=f'Название: {name}\n'

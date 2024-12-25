@@ -33,7 +33,7 @@ class Database:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
                 recipe TEXT,
-                image VARCHAR(20),
+                image TEXT,
                 price FLOAT,
                 category VARCHAR(15)
                 )
