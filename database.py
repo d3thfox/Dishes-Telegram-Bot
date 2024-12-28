@@ -40,6 +40,7 @@ class Database:
                 """)
             conn.commit()
 
+
     def save_survey(self, data: dict):
         with sqlite3.connect(self.path) as conn:
             conn.execute(

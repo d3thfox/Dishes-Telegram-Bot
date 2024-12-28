@@ -1,13 +1,9 @@
 import asyncio
 
-from handlers.catalog import catalog_router
-from handlers.new_recipe import new_recipe_router
-from handlers.start import start_router
-from handlers.random_recipe import random_recipe_router
-from handlers.my_info import my_info_router
 from bot_config import bot,dp
-from handlers.review_dialog import review_router
 from  bot_config import database
+from handlers import private_router
+from handlers.group_menegment import group_router
 
 
 async def on_startup(bot):
@@ -16,9 +12,12 @@ async def on_startup(bot):
 
 
 async def main():
-   dp.include_routers(start_router,random_recipe_router,my_info_router,review_router,new_recipe_router,catalog_router)
+
+   dp.include_routers(private_router,group_router)
    dp.startup.register(on_startup)
    await dp.start_polling(bot)
+
+
 
 
 
